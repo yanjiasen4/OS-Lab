@@ -1,0 +1,11 @@
+Question1:
+Each handler function can handle respective trap so that kernel can deal with all kinds of problems.
+
+Question2:
+Page fault(int 14) is a ring0 trap, it can't be triggered in user mode. If we allow this, it means every process can trigger page fault and it's dangerous.
+
+Question3:
+Set Descriptor Privilege Level to 3, which means user mode.
+
+Question4:
+Different traps should run in different privileges. For example, in softint.c, user process try to trigger a page fault while OS throws a General Protection for it has not privilege to do it.

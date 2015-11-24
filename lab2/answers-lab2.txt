@@ -1,0 +1,51 @@
+5130379022 YangMing
+
+Question 1
+since value is a char pointer, x can't be a physical address. So x is uintptr_t
+
+Question 2
+Entry | Base Virtual Address | Point to (logically)
+1023  |      0xffc00000      | Page table for top 4MB of phys memory
+1022  |      0xff800000      | Page table for top 8-4MB of phys memory
+...   |      ...             | ...
+960   |      0xf0000000      | page table for kernel code
+959   |      0xefc00000      | kernel data top
+958   |      0xef800000      | current page table
+957   |      0xef400000      | RO pages
+956   |      0xeec00000      | RO envs
+955   |      0xeebff000      | User exception stack
+             0xeebfe000        User stack top
+             0xeebfd000        User stack
+ 2    |      0x00800000      | User .text data and heap
+ 1    |      0x00400000      | Empty memory
+ 			 0x00200000      | User STAB data
+ 0    |      0x00000000      | Empty memory
+
+Question 3
+permission has been set when init, such as PTE_U. It can judge if a page can be accessed by a user
+
+Question 4
+sizeof(struct Page)=8
+NPTENTRIES = 1024
+PGSIZE = 4096
+PTSIZE = (PGSIZE*NPTENTRIES) = 1024 * 4096
+total physical memory space: PTSIZE / sizeof(struct Page) * PGSIZE = 1024*4096/8*4096 = 2 GB
+
+Question 5
+page directory and page table led to space overhead. Suppose there're 2GB physical memory, we need 1024 second level page table and this cost 1024 * (4096+4) = 4 MB extra space. However there're only 16639 pages (which is 'npages'), so the overhead becomes 17*4+17*4096 = 69700 Byte. What's more, we also use some extra data struct to manager pages such as page_free_list and chunk_list. They may cost 16639*8 = 133112 Byte space.
+
+Question 6
+at 67th line in entry.S
+------------------------------------
+|movl	$(RELOC(entry_pgdir)), %eax|
+|movl	%eax, %cr3                 |
+------------------------------------
+move to high EIP
+
+Challenge 1
+Hart to start coding
+since there're so many structs, definations and functions the jos provide me, it's hard to understand what I should do immediately. By reading code in xv6 and PPT we learned I get start finally
+
+Challeng 2
+List operating
+realloc is a little difficult to implement while the test can't cover all the situation. I spent about 4 hours to ensure my realloc is right although I have passed it's test.
